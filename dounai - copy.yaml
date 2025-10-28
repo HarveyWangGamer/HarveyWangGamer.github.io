@@ -1,17 +1,16 @@
-# custom-rules.yaml
 rules:
-    - DOMAIN,gateway.icloud.com,ChatGPT
-    - DOMAIN,apple-relay.apple.com,ChatGPT
-- DOMAIN,apple-relay.cloudflare.com,ChatGPT
-- DOMAIN,apple-relay.fastly-edge.com,ChatGPT
-- DOMAIN,cp2.cloudflare.com,ChatGPT
-- DOMAIN,cp4.cloudflare.com,ChatGPT
-- DOMAIN,apps.mzstatic.com,ChatGPT
-- DOMAIN,guzzoni.apple.com,ChatGPT
-- DOMAIN,gateway.icloud.com.cn,ChatGPT
-- DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
-- DOMAIN,proxy.safebrowsing.apple,ChatGPT
-- DOMAIN-SUFFIX, smoot.apple.com,ChatGPT
-    - DOMAIN-KEYWORD,icloud,DIRECT
-    - DOMAIN-KEYWORD,toutiao,DIRECT
-    - DOMAIN-KEYWORD,apple,DIRECT
+  - DOMAIN,gateway.icloud.com,ChatGPT
+  - DOMAIN,apple-relay.apple.com,ChatGPT
+  - DOMAIN,apple-relay.cloudflare.com,ChatGPT
+  - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
+  - DOMAIN,cp2.cloudflare.com,ChatGPT
+  - DOMAIN,cp4.cloudflare.com,ChatGPT
+  - DOMAIN,apps.mzstatic.com,ChatGPT
+  - DOMAIN,guzzoni.apple.com,ChatGPT
+  - DOMAIN,gateway.icloud.com.cn,ChatGPT
+  - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
+  - DOMAIN,proxy.safebrowsing.apple,ChatGPT
+  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
+  - DOMAIN-KEYWORD,icloud,DIRECT
+  - DOMAIN-KEYWORD,toutiao,DIRECT
+  - DOMAIN-KEYWORD,apple,DIRECT
