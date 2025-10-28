@@ -1,4 +1,4 @@
 # custom-rules.yaml
 rules:
     - DOMAIN-KEYWORD,icloud,DIRECT
-- DOMAIN,gateway.icloud.com,ChatGPT
+    - DOMAIN,gateway.icloud.com,ChatGPT
