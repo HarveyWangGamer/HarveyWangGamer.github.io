@@ -1,0 +1,4 @@
+# custom-rules.yaml
+mixin:
+  rules:
+    - DOMAIN-KEYWORD,icloud,DIRECT
