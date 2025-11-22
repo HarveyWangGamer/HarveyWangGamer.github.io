@@ -17,3 +17,4 @@ rules:
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
+  - DOMAIN-KEYWORD,tencent,DIRECT
