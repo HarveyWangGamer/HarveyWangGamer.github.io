@@ -18,3 +18,4 @@ rules:
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,tencent,DIRECT
+  - DOMAIN-KEYWORD,mzstatic,DIRECT
