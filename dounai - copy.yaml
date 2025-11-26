@@ -1,5 +1,5 @@
 rules:
-  - DOMAIN,gateway.icloud.com,ChatGPT
+  - DOMAIN,gateway.icloud.com,DIRECT
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
