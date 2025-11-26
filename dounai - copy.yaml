@@ -10,7 +10,7 @@ rules:
 
 
   # =====================================================================
-  # 1. gateway.icloud.com —— 精细拆分（AI 走代理，备份走直连）
+  # 1. gateway.icloud.com —— 精细拆分（AI 走代理，备份直连）
   # =====================================================================
 
   # 1.1 iCloud 备份 / 照片 / Drive 同步 → DIRECT
@@ -20,7 +20,6 @@ rules:
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudpaird)),DIRECT
-
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,nsurlsessiond)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,bird)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assetsd)),DIRECT
@@ -39,51 +38,60 @@ rules:
 
 
   # =====================================================================
-  # 2. Apple Intelligence 专用域名（语音 / 视觉 / 文字 全部代理）
+  # 2. Apple Intelligence 主链（语音 / 视觉 / 照片 / 文本 全部代理）
   # =====================================================================
 
-  # 2.1 Siri / AI relay 主链路
+  # 2.1 Siri / AI Relay
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
-
   - DOMAIN,cp2.cloudflare.com,ChatGPT
   - DOMAIN,cp4.cloudflare.com,ChatGPT
-
-  - DOMAIN,apps.mzstatic.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,proxy.safebrowsing.apple,ChatGPT
+  - DOMAIN,apps.mzstatic.com,ChatGPT
 
-  # 2.2 网友验证的关键节点
+  # 网友补充板（必要域名）
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
 
-  # 2.3 智能镜头 / 视觉 AI 主链路
+  # 2.2 智能镜头 / 视觉链路
   - DOMAIN,perception.apple.com,ChatGPT
-  - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN,intelligence.apple.com,ChatGPT
-  - DOMAIN,sylvan.apple.com,ChatGPT
+  - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
+  - DOMAIN,sylvan.apple.com,ChatGPT
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,data.apple-intelligence.com,ChatGPT
   - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
 
-  # 2.4 Photos Intelligence（照片智能）回包节点
+  # 2.3 Photos Intelligence 回包（必备）
   - DOMAIN,ess.apple.com,ChatGPT
   - DOMAIN,probe.siri.apple.com,ChatGPT
 
-  # 2.5 Apple Intelligence 初始化链路（首次调用 / 视觉握手）
+  # 2.4 Apple Intelligence 初始化链（首次调用必走代理）
   - DOMAIN,init-p01md.apple.com,ChatGPT
   - DOMAIN,init-p01st.push.apple.com,ChatGPT
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
+
+  # 2.5 视觉握手（你前面遇到卡死的元凶）
   - DOMAIN,cvp.apple.com,ChatGPT
 
 
   # =====================================================================
-  # 3. iCloud 内容分发（备份大流量 CDN）→ 全直连
+  # 2.6 地区验证 / 隐私定位通道（v5.3 新补丁）
+  # =====================================================================
+  - DOMAIN,location-services.apple.com,ChatGPT
+  - DOMAIN,ls.apple.com,ChatGPT
+  - DOMAIN,gs-loc.apple.com,ChatGPT
+  - DOMAIN,gs-loc-cn.apple.com,ChatGPT
+
+
+  # =====================================================================
+  # 3. iCloud 内容分发（大流量） → 必须 DIRECT
   # =====================================================================
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
@@ -100,21 +108,28 @@ rules:
 
 
   # =====================================================================
-  # 3.5 Apple 大流量（商店 / 更新 / 音乐 / 视频）→ 强制直连
+  # 4. Apple 大流量（商店 / 音乐 / 更新 全部直连）
   # =====================================================================
 
   # App Store
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
-  - DOMAIN,apps.apple.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
   - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
+  - DOMAIN,apps.apple.com,DIRECT
+
+  # Music / TV / iTunes
+  - DOMAIN-SUFFIX,music.apple.com,DIRECT
+  - DOMAIN-SUFFIX,apple-music.com,DIRECT
+  - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
+  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
+  - DOMAIN-SUFFIX,tv.apple.com,DIRECT
 
   # 系统更新
   - DOMAIN-SUFFIX,appldnld.apple.com,DIRECT
   - DOMAIN-SUFFIX,oscdn.apple.com,DIRECT
   - DOMAIN-SUFFIX,swcdn.apple.com,DIRECT
-  - DOMAIN-SUFFIX,swdist.apple.com,DIRECT
   - DOMAIN-SUFFIX,swscan.apple.com,DIRECT
+  - DOMAIN-SUFFIX,swdist.apple.com,DIRECT
   - DOMAIN-SUFFIX,updates.cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
 
@@ -123,25 +138,18 @@ rules:
   - DOMAIN-SUFFIX,download.developer.apple.com,DIRECT
   - DOMAIN-SUFFIX,adcdownload.apple.com,DIRECT
 
-  # Apple Music / TV
-  - DOMAIN-SUFFIX,apple-music.com,DIRECT
-  - DOMAIN-SUFFIX,music.apple.com,DIRECT
-  - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
-  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
-  - DOMAIN-SUFFIX,tv.apple.com,DIRECT
-
   # 地图资源
   - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
   - DOMAIN-SUFFIX,cdn.apple-mapkit.com,DIRECT
 
-  # 通用调度节点
+  # Akamai / Edge 常用调度域（稳定直连）
   - DOMAIN-SUFFIX,akadns.net,DIRECT
   - DOMAIN-SUFFIX,edgekey.net,DIRECT
   - DOMAIN-SUFFIX,globalredir.akadns.net,DIRECT
 
 
   # =====================================================================
-  # 4. 国内服务直连
+  # 5. 国内服务
   # =====================================================================
   - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
