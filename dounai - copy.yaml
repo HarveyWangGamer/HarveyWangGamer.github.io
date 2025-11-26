@@ -1,5 +1,23 @@
 rules:
-  - DOMAIN,gateway.icloud.com,ChatGPT
+  # ===== Apple Intelligence / Siri 推理 流量 → 走代理（ChatGPT） =====
+  # 系统智能 / Siri 推理 / Apple Intelligence 相关后台进程
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
+
+  # ===== iCloud 备份 / 照片同步 流量 → 直连（DIRECT） =====
+  # 系统备份进程
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
+  # 照片 / 云相册相关（按需保留）
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
+
+  # ===== 其他 Apple Intelligence 常见域名，可选：走 ChatGPT 代理组 =====
+  - DOMAIN,apple-relay.apple.com,ChatGPT
+  - DOMAIN,apple-relay.cloudflare.com,ChatGPT
+  - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
+  - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
