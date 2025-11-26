@@ -1,70 +1,101 @@
 rules:
   # =====================================================
-  # 1. Apple Intelligence / Siri 推理：必须走代理（ChatGPT）
+  # 1. Apple Intelligence / Siri 推理 → 代理（ChatGPT）
   # =====================================================
-  # 大模型 / Siri 推理 / 写作辅助 / Apple Intelligence
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
-  # 备用：有些客户端不识别 PROCESS-NAME 时，至少保证这几个域名走代理
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
-  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT   # guzzoni.smoot.apple.com 这类也走代理
+  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
 
 
   # =====================================================
-  # 2. iCloud 备份 / 照片 / 大流量：直连，避免吃爆节点
+  # 2. iCloud 备份 / Photos / Drive → 强制直连
   # =====================================================
-  # iCloud 设备整机备份
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
-
-  # iCloud 照片 / 相册同步
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
 
-  # 定位服务：越本地越好，建议强制直连
-  - DOMAIN,gspe1-ssl.ls.apple.com,DIRECT
-
-  # 安全浏览 / 证书校验：走直连更稳
-  - DOMAIN,proxy.safebrowsing.apple,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
+  - DOMAIN-SUFFIX,icloud.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-usercontent.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
 
 
   # =====================================================
-  # 3. Apple / iCloud / App Store / 系统更新：通杀直连
-  #    你之前列出来那整串上百个域名，基本都被这些后缀覆盖
+  # 3. Apple 系统 / CDN / App Store / 更新 → 必须直连
   # =====================================================
   - DOMAIN-SUFFIX,apple.com,DIRECT
-  - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
-  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
   - DOMAIN-SUFFIX,itunes.com,DIRECT
+  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
   - DOMAIN-SUFFIX,akadns.net,DIRECT
   - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
-  - DOMAIN-SUFFIX,siri.apple.com,DIRECT
   - DOMAIN-SUFFIX,ls.apple.com,DIRECT
-
-  # 如果你有中国区 Apple 域名单独路由（比如 geoip-cn），可以放在它们后面
+  - DOMAIN-SUFFIX,siri.apple.com,DIRECT
+  - DOMAIN-SUFFIX,weatherkit.apple.com,DIRECT
 
 
   # =====================================================
-  # 4. 你原来的一些常用直连关键字（保留）
+  # 4. 国内主流视频网站 → 全直连（避免浪费代理带宽）
+  # =====================================================
+  - DOMAIN-SUFFIX,iqiyi.com,DIRECT
+  - DOMAIN-SUFFIX,iqiyipic.com,DIRECT
+  - DOMAIN-SUFFIX,pps.tv,DIRECT
+  - DOMAIN-SUFFIX,qiyi.com,DIRECT
+
+  - DOMAIN-SUFFIX,youku.com,DIRECT
+  - DOMAIN-SUFFIX,tudou.com,DIRECT
+
+  - DOMAIN-SUFFIX,mgtv.com,DIRECT
+  - DOMAIN-SUFFIX,hitv.com,DIRECT
+
+  - DOMAIN-SUFFIX,le.com,DIRECT
+  - DOMAIN-SUFFIX,letv.com,DIRECT
+
+  - DOMAIN-SUFFIX,tencentvideo.com,DIRECT
+  - DOMAIN-SUFFIX,v.qq.com,DIRECT
+
+  - DOMAIN-SUFFIX,bilibili.com,DIRECT
+  - DOMAIN-SUFFIX,acgvideo.com,DIRECT
+
+  - DOMAIN-SUFFIX,douyin.com,DIRECT
+  - DOMAIN-SUFFIX,bytecdn.cn,DIRECT
+  - DOMAIN-SUFFIX,amemv.com,DIRECT
+
+  - DOMAIN-SUFFIX,kuaishou.com,DIRECT
+  - DOMAIN-SUFFIX,kuaishouapi.com,DIRECT
+
+
+  # =====================================================
+  # 5. 国内音乐平台 → 全直连
+  # =====================================================
+  - DOMAIN-SUFFIX,qqmusic.qq.com,DIRECT
+  - DOMAIN-SUFFIX,kugou.com,DIRECT
+  - DOMAIN-SUFFIX,kuwo.cn,DIRECT
+  - DOMAIN-SUFFIX,163.com,DIRECT
+  - DOMAIN-SUFFIX,netease.com,DIRECT
+  - DOMAIN-SUFFIX,migu.cn,DIRECT
+
+
+  # =====================================================
+  # 6. 你之前的 DIRECT 关键字（保留）
   # =====================================================
   - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
-  - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,tencent,DIRECT
-  - DOMAIN-KEYWORD,mzstatic,DIRECT      # 严格说已被上面的 mzstatic.com 覆盖，可留可删
-  - DOMAIN-KEYWORD,aaplimg,DIRECT       # 同理
-  - DOMAIN-KEYWORD,itunes,DIRECT        # 同理
+  - DOMAIN-KEYWORD,octopus,DIRECT
 
-  # ⚠ 非常重要：不要再加下面这两个，会把所有智能流量直接拉去直连，AI 直接失效
+  # ⚠ 禁止添加，避免误杀 Apple Intelligence
   # - DOMAIN-KEYWORD,icloud,DIRECT
   # - DOMAIN-KEYWORD,apple,DIRECT
