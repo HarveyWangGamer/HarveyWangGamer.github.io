@@ -1,11 +1,39 @@
 rules:
   # =====================================================
-  # 1. Apple Intelligence / Siri 推理 → 代理（ChatGPT）
+  # 0. OpenAI / ChatGPT 自身走代理（保证你现在这个 GPT 正常）
   # =====================================================
+  - DOMAIN-SUFFIX,openai.com,ChatGPT
+  - DOMAIN-SUFFIX,api.openai.com,ChatGPT
+  - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
+  - DOMAIN-SUFFIX,auth0.com,ChatGPT
+  - DOMAIN,cdn.auth0.com,ChatGPT
+
+
+  # =====================================================
+  # 1. gateway.icloud.com 精细拆分（顺序极其重要！）
+  #    先匹配备份进程 → 再匹配 AI 进程 → 最后兜底
+  # =====================================================
+
+  # ① iCloud 备份 / 照片 / 同步进程 → 一律直连，绝不走代理
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudpaird)),DIRECT
+
+  # ② Apple Intelligence / Siri 推理进程 → 强制走代理
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
+  # ③ 兜底：其它没识别到进程名的 gateway 流量 → 走代理
+  - DOMAIN,gateway.icloud.com,ChatGPT
+
+
+  # =====================================================
+  # 2. Apple Intelligence / Siri 相关中转域名 → 走代理
+  # =====================================================
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
@@ -15,22 +43,18 @@ rules:
 
 
   # =====================================================
-  # 2. iCloud 备份 / Photos / Drive → 强制直连
+  # 3. iCloud 大流量 CDN → 一律直连（备份/照片不吃代理）
+  #    解决 edge-xxx.hkhkg2.icloud-content.com 吃爆流量的问题
   # =====================================================
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
-
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
-  - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloud-usercontent.com,DIRECT
   - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
+  # ⚠ 刻意不写 icloud.com 整体直连，避免把 gateway 拉下水
 
 
   # =====================================================
-  # 3. Apple 系统 / CDN / App Store / 更新 → 必须直连
+  # 4. Apple 系统 / CDN / App Store / 更新 / 地图 → 全直连
   # =====================================================
   - DOMAIN-SUFFIX,apple.com,DIRECT
   - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
@@ -41,43 +65,60 @@ rules:
   - DOMAIN-SUFFIX,akadns.net,DIRECT
   - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
   - DOMAIN-SUFFIX,ls.apple.com,DIRECT
+  - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
+
+  # 定位 / 天气 / Siri 杂项 → 直连更稳更快
+  - DOMAIN,gspe1-ssl.ls.apple.com,DIRECT
   - DOMAIN-SUFFIX,siri.apple.com,DIRECT
   - DOMAIN-SUFFIX,weatherkit.apple.com,DIRECT
+  - DOMAIN-SUFFIX,weather-data.apple.com,DIRECT
+
+  # 安全浏览
+  - DOMAIN,proxy.safebrowsing.apple,DIRECT
 
 
   # =====================================================
-  # 4. 国内主流视频网站 → 全直连（避免浪费代理带宽）
+  # 5. 国内主流视频网站 → 全直连（省节点）
   # =====================================================
+
+  # 爱奇艺
   - DOMAIN-SUFFIX,iqiyi.com,DIRECT
   - DOMAIN-SUFFIX,iqiyipic.com,DIRECT
   - DOMAIN-SUFFIX,pps.tv,DIRECT
   - DOMAIN-SUFFIX,qiyi.com,DIRECT
 
+  # 优酷 / 土豆
   - DOMAIN-SUFFIX,youku.com,DIRECT
   - DOMAIN-SUFFIX,tudou.com,DIRECT
 
+  # 芒果 TV
   - DOMAIN-SUFFIX,mgtv.com,DIRECT
   - DOMAIN-SUFFIX,hitv.com,DIRECT
 
+  # 乐视（顺便带上）
   - DOMAIN-SUFFIX,le.com,DIRECT
   - DOMAIN-SUFFIX,letv.com,DIRECT
 
+  # 腾讯视频
   - DOMAIN-SUFFIX,tencentvideo.com,DIRECT
   - DOMAIN-SUFFIX,v.qq.com,DIRECT
 
+  # B 站
   - DOMAIN-SUFFIX,bilibili.com,DIRECT
   - DOMAIN-SUFFIX,acgvideo.com,DIRECT
 
+  # 抖音系
   - DOMAIN-SUFFIX,douyin.com,DIRECT
   - DOMAIN-SUFFIX,bytecdn.cn,DIRECT
   - DOMAIN-SUFFIX,amemv.com,DIRECT
 
+  # 快手
   - DOMAIN-SUFFIX,kuaishou.com,DIRECT
   - DOMAIN-SUFFIX,kuaishouapi.com,DIRECT
 
 
   # =====================================================
-  # 5. 国内音乐平台 → 全直连
+  # 6. 国内音乐平台 → 全直连
   # =====================================================
   - DOMAIN-SUFFIX,qqmusic.qq.com,DIRECT
   - DOMAIN-SUFFIX,kugou.com,DIRECT
@@ -88,7 +129,7 @@ rules:
 
 
   # =====================================================
-  # 6. 你之前的 DIRECT 关键字（保留）
+  # 7. 你原本习惯用的一些 DIRECT 关键字
   # =====================================================
   - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
@@ -96,6 +137,6 @@ rules:
   - DOMAIN-KEYWORD,tencent,DIRECT
   - DOMAIN-KEYWORD,octopus,DIRECT
 
-  # ⚠ 禁止添加，避免误杀 Apple Intelligence
+  # ⚠ 非常重要：不要再加下面这两条，不然前面所有精细拆分白干
   # - DOMAIN-KEYWORD,icloud,DIRECT
   # - DOMAIN-KEYWORD,apple,DIRECT
