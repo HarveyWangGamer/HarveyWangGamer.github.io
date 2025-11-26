@@ -13,7 +13,7 @@ rules:
   # 1. gateway.icloud.com —— 精细拆分（AI 走代理，备份走直连）
   # =====================================================================
 
-  # iCloud 备份 / 照片 / Drive 同步 → DIRECT
+  # 1.1 iCloud 备份 / 照片 / Drive 同步 → DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
@@ -29,20 +29,20 @@ rules:
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileproviderd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileprovider)),DIRECT
 
-  # Apple Intelligence 推理进程 → ChatGPT
+  # 1.2 Apple Intelligence 推理进程 → ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
-  # gateway 主域兜底 → 走代理
+  # 1.3 gateway 主域兜底 → 走代理
   - DOMAIN,gateway.icloud.com,ChatGPT
 
 
   # =====================================================================
-  # 2. Apple Intelligence 专用域名（语音/视觉/文字 全部代理）
+  # 2. Apple Intelligence 专用域名（语音 / 视觉 / 文字 全部代理）
   # =====================================================================
 
-  # Siri 主链路
+  # 2.1 Siri / AI relay 主链路
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
@@ -57,11 +57,11 @@ rules:
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,proxy.safebrowsing.apple,ChatGPT
 
-  # 新补充（网友验证的必要节点）
+  # 2.2 网友验证的关键节点
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
 
-  # 智能镜头（视觉 AI）
+  # 2.3 智能镜头 / 视觉 AI 主链路
   - DOMAIN,perception.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN,intelligence.apple.com,ChatGPT
@@ -71,9 +71,15 @@ rules:
   - DOMAIN,data.apple-intelligence.com,ChatGPT
   - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
 
-  # Photos Intelligence 回包节点（你缺的关键）
+  # 2.4 Photos Intelligence（照片智能）回包节点
   - DOMAIN,ess.apple.com,ChatGPT
   - DOMAIN,probe.siri.apple.com,ChatGPT
+
+  # 2.5 Apple Intelligence 初始化链路（首次调用 / 视觉握手）
+  - DOMAIN,init-p01md.apple.com,ChatGPT
+  - DOMAIN,init-p01st.push.apple.com,ChatGPT
+  - DOMAIN,init-s01st.push.apple.com,ChatGPT
+  - DOMAIN,cvp.apple.com,ChatGPT
 
 
   # =====================================================================
