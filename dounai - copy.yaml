@@ -1,41 +1,70 @@
 rules:
-  # ===== Apple Intelligence / Siri 推理 流量 → 走代理（ChatGPT） =====
-  # 系统智能 / Siri 推理 / Apple Intelligence 相关后台进程
+  # =====================================================
+  # 1. Apple Intelligence / Siri 推理：必须走代理（ChatGPT）
+  # =====================================================
+  # 大模型 / Siri 推理 / 写作辅助 / Apple Intelligence
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
-  # ===== iCloud 备份 / 照片同步 流量 → 直连（DIRECT） =====
-  # 系统备份进程
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
-  # 照片 / 云相册相关（按需保留）
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
-
-  # ===== 其他 Apple Intelligence 常见域名，可选：走 ChatGPT 代理组 =====
+  # 备用：有些客户端不识别 PROCESS-NAME 时，至少保证这几个域名走代理
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
-  - DOMAIN,apple-relay.apple.com,ChatGPT
-  - DOMAIN,apple-relay.cloudflare.com,ChatGPT
-  - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
-  - DOMAIN,cp2.cloudflare.com,ChatGPT
-  - DOMAIN,cp4.cloudflare.com,ChatGPT
-  - DOMAIN,apps.mzstatic.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
-  - DOMAIN,gateway.icloud.com.cn,ChatGPT
-  - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
-  - DOMAIN,proxy.safebrowsing.apple,ChatGPT
-  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
-  - DOMAIN-KEYWORD,icloud,DIRECT
+  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT   # guzzoni.smoot.apple.com 这类也走代理
+
+
+  # =====================================================
+  # 2. iCloud 备份 / 照片 / 大流量：直连，避免吃爆节点
+  # =====================================================
+  # iCloud 设备整机备份
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
+
+  # iCloud 照片 / 相册同步
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
+
+  # 定位服务：越本地越好，建议强制直连
+  - DOMAIN,gspe1-ssl.ls.apple.com,DIRECT
+
+  # 安全浏览 / 证书校验：走直连更稳
+  - DOMAIN,proxy.safebrowsing.apple,DIRECT
+
+
+  # =====================================================
+  # 3. Apple / iCloud / App Store / 系统更新：通杀直连
+  #    你之前列出来那整串上百个域名，基本都被这些后缀覆盖
+  # =====================================================
+  - DOMAIN-SUFFIX,apple.com,DIRECT
+  - DOMAIN-SUFFIX,icloud.com,DIRECT
+  - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
+  - DOMAIN-SUFFIX,aaplimg.com,DIRECT
+  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
+  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
+  - DOMAIN-SUFFIX,itunes.com,DIRECT
+  - DOMAIN-SUFFIX,akadns.net,DIRECT
+  - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
+  - DOMAIN-SUFFIX,siri.apple.com,DIRECT
+  - DOMAIN-SUFFIX,ls.apple.com,DIRECT
+
+  # 如果你有中国区 Apple 域名单独路由（比如 geoip-cn），可以放在它们后面
+
+
+  # =====================================================
+  # 4. 你原来的一些常用直连关键字（保留）
+  # =====================================================
   - DOMAIN-KEYWORD,toutiao,DIRECT
-  - DOMAIN-KEYWORD,apple,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,tencent,DIRECT
-  - DOMAIN-KEYWORD,mzstatic,DIRECT
-  - DOMAIN-KEYWORD,aaplimg,DIRECT
-  - DOMAIN-KEYWORD,itunes,DIRECT
+  - DOMAIN-KEYWORD,mzstatic,DIRECT      # 严格说已被上面的 mzstatic.com 覆盖，可留可删
+  - DOMAIN-KEYWORD,aaplimg,DIRECT       # 同理
+  - DOMAIN-KEYWORD,itunes,DIRECT        # 同理
+
+  # ⚠ 非常重要：不要再加下面这两个，会把所有智能流量直接拉去直连，AI 直接失效
+  # - DOMAIN-KEYWORD,icloud,DIRECT
+  # - DOMAIN-KEYWORD,apple,DIRECT
