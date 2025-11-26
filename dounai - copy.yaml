@@ -10,95 +10,84 @@ rules:
 
 
   # =====================================================================
-  # 1. gateway.icloud.com 专门处理（覆写最前面）
+  # 1. gateway.icloud.com —— 专属精细兼容（必须放最前）
   # =====================================================================
 
-  # —— iCloud 备份 / 照片 / 同步：尽量 DIRECT（但不再赌所有进程）
+  # ===== iCloud 备份进程 → DIRECT (最大限度减少节点消耗)
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudpaird)),DIRECT
 
-  # —— Apple Intelligence / Siri 推理 → 必须走代理
+  # ===== 必须兼容的备份实际进程（很关键）
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,nsurlsessiond)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,bird)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,accountsd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,syncdefaultsd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assetsd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileproviderd)),DIRECT
+  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileprovider)),DIRECT
+
+  # ===== Apple Intelligence / Siri 推理 → PROXY
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
-  # 兜底：其它 gateway 流量（少量控制流）走代理
+  # ===== gateway兜底（智能部分默认走代理）
   - DOMAIN,gateway.icloud.com,ChatGPT
+  - DOMAIN,gateway.icloud.com.cn,ChatGPT
+
 
 
   # =====================================================================
-  # 2. Apple Intelligence 中转域名（强制走代理）
+  # 2. 你指定的“必须永远走代理”的苹果智能域名（你的列表）
   # =====================================================================
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
+
+  - DOMAIN,cp2.cloudflare.com,ChatGPT
+  - DOMAIN,cp4.cloudflare.com,ChatGPT
+
+  - DOMAIN,apps.mzstatic.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
-  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT   # guzzoni.smoot.apple.com 这一挂
+  - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
+  - DOMAIN,proxy.safebrowsing.apple,ChatGPT
+  - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
+
 
 
   # =====================================================================
-  # 3. iCloud 备份大头流量（CDN）——用“安全大词 + SUFFIX”全拉 DIRECT
-  #     这些不会命中 gateway，只会命中各种 edge / 节点
+  # 3. iCloud 备份相关 CDN（不会误伤 gateway）→ 直连
   # =====================================================================
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
-  - DOMAIN-KEYWORD,icloud-content,DIRECT
-
   - DOMAIN-SUFFIX,icloud-usercontent.com,DIRECT
-  - DOMAIN-KEYWORD,icloud-usercontent,DIRECT
-
   - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
+  - DOMAIN-SUFFIX,icloud.com.akadns.net,DIRECT
+  - DOMAIN-KEYWORD,icloud-content,DIRECT
+  - DOMAIN-KEYWORD,icloud-usercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-drive,DIRECT
-
-  - DOMAIN-KEYWORD,icloud-storage,DIRECT
   - DOMAIN-KEYWORD,icloud-photo,DIRECT
+  - DOMAIN-KEYWORD,icloud-storage,DIRECT
   - DOMAIN-KEYWORD,icloud-data,DIRECT
   - DOMAIN-KEYWORD,icloud-services,DIRECT
-
-  # quota / storage 控制接口（你抓包看到的 p54-quota.icloud.com 之类）
   - DOMAIN-SUFFIX,quota.icloud.com,DIRECT
   - DOMAIN-SUFFIX,storage.icloud.com,DIRECT
-  - DOMAIN-KEYWORD,quota.icloud.com,DIRECT
-  - DOMAIN-KEYWORD,storage.icloud.com,DIRECT
 
-
-  # =====================================================================
-  # 4. Apple 系统 / CDN / App Store / 更新 → SUFFIX 直连（不会碰 gateway）
-  # =====================================================================
-  - DOMAIN-SUFFIX,apple.com,DIRECT
-  - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
-  - DOMAIN-SUFFIX,aaplimg.com,DIRECT
-  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
-  - DOMAIN-SUFFIX,itunes.com,DIRECT
-  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
-  - DOMAIN-SUFFIX,akadns.net,DIRECT
-  - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
-  - DOMAIN-SUFFIX,ls.apple.com,DIRECT
-  - DOMAIN-SUFFIX,weatherkit.apple.com,DIRECT
-  - DOMAIN-SUFFIX,weather-data.apple.com,DIRECT
-
-  # 定位 / 证书安全：直连
-  - DOMAIN,gspe1-ssl.ls.apple.com,DIRECT
-  - DOMAIN,proxy.safebrowsing.apple,DIRECT
 
 
   # =====================================================================
-  # 5. 国内视频 / 音乐 / 你原来习惯的 DIRECT 关键字
+  # 4. 国内直连 KEYWORD（你指定要兼容的）
   # =====================================================================
-  - DOMAIN-SUFFIX,iqiyi.com,DIRECT
-  - DOMAIN-SUFFIX,iqiyipic.com,DIRECT
-  - DOMAIN-SUFFIX,youku.com,DIRECT
-  - DOMAIN-SUFFIX,bilibili.com,DIRECT
-  - DOMAIN-SUFFIX,acgvideo.com,DIRECT
-  - DOMAIN-SUFFIX,v.qq.com,DIRECT
-  - DOMAIN-SUFFIX,douyin.com,DIRECT
-  - DOMAIN-SUFFIX,kuaishou.com,DIRECT
-
   - DOMAIN-KEYWORD,toutiao,DIRECT
+  - DOMAIN-KEYWORD,mail.me,DIRECT
+  - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,tencent,DIRECT
-  - DOMAIN-KEYWORD,octopus,DIRECT
-  - DOMAIN-KEYWORD,mail.me,DIRECT
+  - DOMAIN-KEYWORD,mzstatic,DIRECT
+  - DOMAIN-KEYWORD,aaplimg,DIRECT
+  - DOMAIN-KEYWORD,itunes,DIRECT
