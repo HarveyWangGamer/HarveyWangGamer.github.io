@@ -1,122 +1,124 @@
 rules:
   # =====================================================================
-  # 0. ChatGPT / OpenAI 自身走代理
+  # 0. ChatGPT / OpenAI 自身
   # =====================================================================
   - DOMAIN-SUFFIX,openai.com,ChatGPT
-  - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
-  - DOMAIN-SUFFIX,auth0.com,ChatGPT
+  - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
 
 
   # =====================================================================
-  # 1. gateway.icloud.com —— v5.4架构分流（新版AI要求）
+  # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
   # =====================================================================
-  # **你关心的重点：gateway 默认直连不会导致 AI 不能用（因为新版 AI 不依赖 gateway）**
 
-  # 1.1 iCloud 大流量 → DIRECT
+  # 1.1 iCloud 大流量（照片、备份、同步）100% 直连
   - DOMAIN-SUFFIX,icloud.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
   - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
   - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
   - DOMAIN-SUFFIX,storage.icloud.com,DIRECT
   - DOMAIN-KEYWORD,icloudusercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-content,DIRECT
-  - DOMAIN-KEYWORD,icloud-drive,DIRECT
 
-  # 1.2 Apple Intelligence 关键进程 → ChatGPT
+  # 1.2 AI 进程（必须代理，不然 Apple Intelligence 全挂）
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
-  # 关键：新版 AI 全靠这些进程分流，而不是 gateway
 
-  # 1.3 gateway 主域兜底 → DIRECT（避免把所有 iCloud 流量压进代理）
-  - DOMAIN,gateway.icloud.com,DIRECT
+  # 1.3 gateway 主入口（不能直连）
+  - DOMAIN,gateway.icloud.com,ChatGPT
 
 
   # =====================================================================
-  # 2. Apple Intelligence 主推理链路（必须代理）
+  # 2. Siri Relay（智能对外主网关）
   # =====================================================================
-
-  # Siri / Core Relay
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
-  - DOMAIN,cp2.cloudflare.com,ChatGPT
-  - DOMAIN,cp4.cloudflare.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
+  - DOMAIN,guzzoni.smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
-  - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
-  - DOMAIN,proxy.safebrowsing.apple,ChatGPT
 
-  # 地区验证链（新版 AI 必经）
+
+  # =====================================================================
+  # 3. 地区验证 / 认证链（必须代理）
+  # =====================================================================
   - DOMAIN,gsas.apple.com,ChatGPT
-  - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
+  - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,location-services.apple.com,ChatGPT
   - DOMAIN,ls.apple.com,ChatGPT
+  - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
 
-  # 初始化链（新版 AI 会多次握手）
-  - DOMAIN,init-p01md.apple.com,ChatGPT
-  - DOMAIN,init-p01st.push.apple.com,ChatGPT
-  - DOMAIN,init-s01st.push.apple.com,ChatGPT
+
+  # =====================================================================
+  # 4. 初始化链（Apple Intelligence 启动必要）
+  # =====================================================================
   - DOMAIN,init.gc.apple.com,ChatGPT
   - DOMAIN,init-prime.apple.com,ChatGPT
   - DOMAIN,init.ess.apple.com,ChatGPT
+  - DOMAIN,init-p01md.apple.com,ChatGPT
+  - DOMAIN,init-p01st.push.apple.com,ChatGPT
+  - DOMAIN,init-s01st.push.apple.com,ChatGPT
 
-  # 视觉 / 推理 / NLP（新版 AI 的核心）
-  - DOMAIN,perception.apple.com,ChatGPT
+
+  # =====================================================================
+  # 5. AI 主链路（智能文本 / 视觉 / 推理引擎）
+  # =====================================================================
   - DOMAIN,intelligence.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
+
+  - DOMAIN,perception.apple.com,ChatGPT
   - DOMAIN,sylvan.apple.com,ChatGPT
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
-  - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
 
-  # fallback（新版 AI 最容易报错的链路）
+
+  # =====================================================================
+  # 6. AI Fallback（高危遗漏 → 必须代理）
+  # =====================================================================
+
+  # 视觉 Fallback
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
   - DOMAIN,perception-cdn.apple.com,ChatGPT
+  - DOMAIN,sylvan-cdn.apple.com,ChatGPT
+
+  # LLM Fallback
   - DOMAIN,pancake-cdn.apple.com,ChatGPT
   - DOMAIN,sequoia-cdn.apple.com,ChatGPT
 
-  # 照片智能（新版回包）
+  # 照片智能
   - DOMAIN,ess.apple.com,ChatGPT
   - DOMAIN,probe.siri.apple.com,ChatGPT
 
+  # 最新智能链（精确不过度）
+  - DOMAIN-KEYWORD,intelligence-data,ChatGPT
+  - DOMAIN-KEYWORD,perception-ios,ChatGPT
+  - DOMAIN-KEYWORD,pancake-v2,ChatGPT
+  - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
+
 
   # =====================================================================
-  # 3. Apple 商店 / Music / 更新（安全直连，不影响 AI）
+  # 7. 苹果大流量 CDN（App Store / 音乐 / 更新 → 全部 DIRECT）
   # =====================================================================
-
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
-  - DOMAIN,apps.apple.com,DIRECT
   - DOMAIN-SUFFIX,apple-music.com,DIRECT
-  - DOMAIN-SUFFIX,music.apple.com,DIRECT
-  - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
-  - DOMAIN-SUFFIX,tv.apple.com,DIRECT
-  - DOMAIN-SUFFIX,appldnld.apple.com,DIRECT
   - DOMAIN-SUFFIX,oscdn.apple.com,DIRECT
-  - DOMAIN-SUFFIX,swcdn.apple.com,DIRECT
-  - DOMAIN-SUFFIX,swdist.apple.com,DIRECT
-  - DOMAIN-SUFFIX,swscan.apple.com,DIRECT
   - DOMAIN-SUFFIX,updates.cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
-  - DOMAIN-SUFFIX,developer.apple.com,DIRECT
-  - DOMAIN-SUFFIX,download.developer.apple.com,DIRECT
-  - DOMAIN-SUFFIX,adcdownload.apple.com,DIRECT
-  - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
-  - DOMAIN-SUFFIX,cdn.apple-mapkit.com,DIRECT
+  - DOMAIN,apps.apple.com,DIRECT
 
 
   # =====================================================================
-  # 4. 国内服务直连（避免绕路）
+  # 8. 国内服务不走代理
   # =====================================================================
-  - DOMAIN-KEYWORD,toutiao,DIRECT
-  - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,tencent,DIRECT
-  - DOMAIN-KEYWORD,mail.me,DIRECT
+  - DOMAIN-KEYWORD,douyin,DIRECT
+  - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,octopus,DIRECT
+  - DOMAIN-KEYWORD,mail.me,DIRECT
