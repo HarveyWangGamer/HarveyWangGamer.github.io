@@ -10,38 +10,36 @@ rules:
 
 
   # =====================================================================
-  # 1. gateway.icloud.com —— 精细分流（AI 通过节点，备份直连）
+  # 1. gateway.icloud.com —— v5.4架构分流（新版AI要求）
   # =====================================================================
+  # **你关心的重点：gateway 默认直连不会导致 AI 不能用（因为新版 AI 不依赖 gateway）**
 
-  # 1.1 iCloud 备份 / 照片 / Drive 同步 → DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,backupd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,mobilebackup)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudphotosd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,photolibraryd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,cloudpaird)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,nsurlsessiond)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,bird)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assetsd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,accountsd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,syncdefaultsd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileproviderd)),DIRECT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,fileprovider)),DIRECT
+  # 1.1 iCloud 大流量 → DIRECT
+  - DOMAIN-SUFFIX,icloud.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
+  - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
+  - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
+  - DOMAIN-SUFFIX,storage.icloud.com,DIRECT
+  - DOMAIN-KEYWORD,icloudusercontent,DIRECT
+  - DOMAIN-KEYWORD,icloud-content,DIRECT
+  - DOMAIN-KEYWORD,icloud-drive,DIRECT
 
-  # 1.2 Apple Intelligence 推理进程 → ChatGPT
+  # 1.2 Apple Intelligence 关键进程 → ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
+  # 关键：新版 AI 全靠这些进程分流，而不是 gateway
 
-  # 1.3 gateway 主域兜底 → 代理
-  - DOMAIN,gateway.icloud.com,ChatGPT
+  # 1.3 gateway 主域兜底 → DIRECT（避免把所有 iCloud 流量压进代理）
+  - DOMAIN,gateway.icloud.com,DIRECT
 
 
   # =====================================================================
-  # 2. Apple Intelligence 主链路（全都走代理）
+  # 2. Apple Intelligence 主推理链路（必须代理）
   # =====================================================================
 
-  # Siri / AI relay
+  # Siri / Core Relay
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
@@ -50,29 +48,17 @@ rules:
   - DOMAIN,cp4.cloudflare.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,proxy.safebrowsing.apple,ChatGPT
-  - DOMAIN,apps.mzstatic.com,ChatGPT
 
-  # 网友补充的关键域
+  # 地区验证链（新版 AI 必经）
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
+  - DOMAIN,location-services.apple.com,ChatGPT
+  - DOMAIN,ls.apple.com,ChatGPT
 
-  # 视觉主链（智能镜头 / 图片理解）
-  - DOMAIN,perception.apple.com,ChatGPT
-  - DOMAIN,intelligence.apple.com,ChatGPT
-  - DOMAIN,intelligence-ios.apple.com,ChatGPT
-  - DOMAIN,sylvan.apple.com,ChatGPT
-  - DOMAIN,sequoia.apple.com,ChatGPT
-  - DOMAIN,pancake.apple.com,ChatGPT
-  - DOMAIN,data.apple-intelligence.com,ChatGPT
-  - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
-
-  # 照片智能（结果回包）
-  - DOMAIN,ess.apple.com,ChatGPT
-  - DOMAIN,probe.siri.apple.com,ChatGPT
-
-  # 初始化链（首次 / 第二次 handshake 必经）
+  # 初始化链（新版 AI 会多次握手）
   - DOMAIN,init-p01md.apple.com,ChatGPT
   - DOMAIN,init-p01st.push.apple.com,ChatGPT
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
@@ -80,49 +66,38 @@ rules:
   - DOMAIN,init-prime.apple.com,ChatGPT
   - DOMAIN,init.ess.apple.com,ChatGPT
 
-  # fallback（视觉 / 推理 / perception）
+  # 视觉 / 推理 / NLP（新版 AI 的核心）
+  - DOMAIN,perception.apple.com,ChatGPT
+  - DOMAIN,intelligence.apple.com,ChatGPT
+  - DOMAIN,intelligence-ios.apple.com,ChatGPT
+  - DOMAIN,sylvan.apple.com,ChatGPT
+  - DOMAIN,pancake.apple.com,ChatGPT
+  - DOMAIN,sequoia.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
+
+  # fallback（新版 AI 最容易报错的链路）
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
   - DOMAIN,perception-cdn.apple.com,ChatGPT
   - DOMAIN,pancake-cdn.apple.com,ChatGPT
   - DOMAIN,sequoia-cdn.apple.com,ChatGPT
 
-  # 地区验证（无定位图标也可能触发）
-  - DOMAIN,location-services.apple.com,ChatGPT
-  - DOMAIN,ls.apple.com,ChatGPT
-  - DOMAIN,gs-loc.apple.com,ChatGPT
-  - DOMAIN,gs-loc-cn.apple.com,ChatGPT
-  - DOMAIN,configuration.ls.apple.com,ChatGPT
-  - DOMAIN,device-gslb.apple.com,ChatGPT
+  # 照片智能（新版回包）
+  - DOMAIN,ess.apple.com,ChatGPT
+  - DOMAIN,probe.siri.apple.com,ChatGPT
 
 
   # =====================================================================
-  # 3. iCloud 大流量 CDN（安全直连，不误伤 AI）
+  # 3. Apple 商店 / Music / 更新（安全直连，不影响 AI）
   # =====================================================================
-  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-content.com.cn,DIRECT
-  - DOMAIN-SUFFIX,icloud-usercontent.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-drive.com,DIRECT
-  - DOMAIN-SUFFIX,quota.icloud.com,DIRECT
-  - DOMAIN-SUFFIX,storage.icloud.com,DIRECT
-  - DOMAIN-KEYWORD,icloud-usercontent,DIRECT
-  - DOMAIN-KEYWORD,icloud-content,DIRECT
-  - DOMAIN-KEYWORD,icloud-drive,DIRECT
 
-
-  # =====================================================================
-  # 4. Apple 商店 / 音乐 / 更新（安全直连）
-  # =====================================================================
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
   - DOMAIN,apps.apple.com,DIRECT
-
   - DOMAIN-SUFFIX,apple-music.com,DIRECT
   - DOMAIN-SUFFIX,music.apple.com,DIRECT
   - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
-  - DOMAIN-SUFFIX,itunes-apple.com,DIRECT
   - DOMAIN-SUFFIX,tv.apple.com,DIRECT
-
   - DOMAIN-SUFFIX,appldnld.apple.com,DIRECT
   - DOMAIN-SUFFIX,oscdn.apple.com,DIRECT
   - DOMAIN-SUFFIX,swcdn.apple.com,DIRECT
@@ -130,17 +105,15 @@ rules:
   - DOMAIN-SUFFIX,swscan.apple.com,DIRECT
   - DOMAIN-SUFFIX,updates.cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
-
   - DOMAIN-SUFFIX,developer.apple.com,DIRECT
   - DOMAIN-SUFFIX,download.developer.apple.com,DIRECT
   - DOMAIN-SUFFIX,adcdownload.apple.com,DIRECT
-
   - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
   - DOMAIN-SUFFIX,cdn.apple-mapkit.com,DIRECT
 
 
   # =====================================================================
-  # 5. 国内服务直连（安全）
+  # 4. 国内服务直连（避免绕路）
   # =====================================================================
   - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
