@@ -16,11 +16,41 @@ rules:
   - DOMAIN-SUFFIX,qcloud.com,DIRECT
   - DOMAIN-SUFFIX,qq.com,DIRECT
   - DOMAIN-SUFFIX,baidu.com,DIRECT
-  - IP-CIDR,120.221.0.0/16,DIRECT,no-resolve
-  - IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
-  - IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
-  - IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
-  - IP-CIDR,139.159.146.137:7001,DIRECT,no-resolve
+# ===== IM30 Mind Office 全部直连 =====
+- PROCESS-NAME,com.im30.mind.ios,DIRECT
+
+# IM30 自己服务器
+- DOMAIN-KEYWORD,im30,DIRECT
+- DOMAIN-KEYWORD,mindoffice,DIRECT
+- DOMAIN-SUFFIX,im30.net,DIRECT
+- DOMAIN-SUFFIX,mindoffice.cn,DIRECT
+
+# 腾讯云 CDN / 资源
+- DOMAIN-SUFFIX,myqcloud.com,DIRECT
+- DOMAIN-SUFFIX,qcloud.com,DIRECT
+- DOMAIN-SUFFIX,qcloudcdn.com,DIRECT
+
+# 推送 / 崩溃 / SDK
+- DOMAIN-SUFFIX,jpush.cn,DIRECT
+- DOMAIN-SUFFIX,bugly.qq.com,DIRECT
+- DOMAIN-SUFFIX,easytomessage.com,DIRECT
+
+# 地图 / 国内服务
+- DOMAIN-SUFFIX,baidu.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+
+# Google analytics（有些SDK会走这个）
+- DOMAIN-SUFFIX,app-analytics-services.com,DIRECT
+
+# 游戏服务器 IP（你日志里出现的）
+- IP-CIDR,139.9.178.8/32,DIRECT,no-resolve
+- IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
+
+# 华为云 / 腾讯云常见网段
+- IP-CIDR,120.221.0.0/16,DIRECT,no-resolve
+- IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
+- IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
+- IP-CIDR,139.9.0.0/16,DIRECT,no-resolve
   
   # =====================================================================
   # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
