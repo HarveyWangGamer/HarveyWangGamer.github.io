@@ -6,6 +6,7 @@ rules:
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
   - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
+  - PROCESS-NAME,com.im30.mind.ios,DIRECT
 
 
   # =====================================================================
