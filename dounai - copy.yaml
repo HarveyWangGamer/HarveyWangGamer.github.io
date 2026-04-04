@@ -6,8 +6,21 @@ rules:
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
   - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
-  - PROCESS-NAME,com.im30.mind.ios,默认节点
-
+  
+# ===== IM30 游戏直连 =====
+PROCESS-NAME,com.im30.mind.ios,DIRECT
+DOMAIN-KEYWORD,im30,DIRECT
+DOMAIN-KEYWORD,mindoffice,DIRECT
+DOMAIN-KEYWORD,myqcloud,DIRECT
+DOMAIN-SUFFIX,jpush.cn,DIRECT
+DOMAIN-SUFFIX,bugly.qq.com,DIRECT
+DOMAIN-SUFFIX,easytomessage.com,DIRECT
+DOMAIN-SUFFIX,qcloud.com,DIRECT
+DOMAIN-SUFFIX,qq.com,DIRECT
+DOMAIN-SUFFIX,baidu.com,DIRECT
+IP-CIDR,120.221.0.0/16,DIRECT,no-resolve
+IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
+IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
 
   # =====================================================================
   # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
