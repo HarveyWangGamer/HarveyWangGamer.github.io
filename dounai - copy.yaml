@@ -1,62 +1,56 @@
 rules:
+
   # =====================================================================
-  # 0. ChatGPT / OpenAI 自身
+  # 0. ChatGPT / OpenAI
   # =====================================================================
   - DOMAIN-SUFFIX,openai.com,ChatGPT
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
   - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
+
+
+  # =====================================================================
+  # 1. IM30 Mind Office 全部直连
+  # =====================================================================
   - PROCESS-NAME,com.im30.mind.ios,DIRECT
+
+  # IM30 自己服务器
   - DOMAIN-KEYWORD,im30,DIRECT
   - DOMAIN-KEYWORD,mindoffice,DIRECT
-  - DOMAIN-KEYWORD,myqcloud,DIRECT
+  - DOMAIN-SUFFIX,im30.net,DIRECT
+  - DOMAIN-SUFFIX,mindoffice.cn,DIRECT
+
+  # 腾讯云 CDN / 资源
+  - DOMAIN-SUFFIX,myqcloud.com,DIRECT
+  - DOMAIN-SUFFIX,qcloud.com,DIRECT
+  - DOMAIN-SUFFIX,qcloudcdn.com,DIRECT
+
+  # 推送 / 崩溃 / SDK
   - DOMAIN-SUFFIX,jpush.cn,DIRECT
   - DOMAIN-SUFFIX,bugly.qq.com,DIRECT
   - DOMAIN-SUFFIX,easytomessage.com,DIRECT
-  - DOMAIN-SUFFIX,qcloud.com,DIRECT
-  - DOMAIN-SUFFIX,qq.com,DIRECT
+
+  # 地图 / 国内服务
   - DOMAIN-SUFFIX,baidu.com,DIRECT
-# ===== IM30 Mind Office 全部直连 =====
-- PROCESS-NAME,com.im30.mind.ios,DIRECT
+  - DOMAIN-SUFFIX,qq.com,DIRECT
 
-# IM30 自己服务器
-- DOMAIN-KEYWORD,im30,DIRECT
-- DOMAIN-KEYWORD,mindoffice,DIRECT
-- DOMAIN-SUFFIX,im30.net,DIRECT
-- DOMAIN-SUFFIX,mindoffice.cn,DIRECT
+  # Google analytics
+  - DOMAIN-SUFFIX,app-analytics-services.com,DIRECT
 
-# 腾讯云 CDN / 资源
-- DOMAIN-SUFFIX,myqcloud.com,DIRECT
-- DOMAIN-SUFFIX,qcloud.com,DIRECT
-- DOMAIN-SUFFIX,qcloudcdn.com,DIRECT
+  # 游戏服务器 IP
+  - IP-CIDR,139.9.178.8/32,DIRECT,no-resolve
+  - IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
 
-# 推送 / 崩溃 / SDK
-- DOMAIN-SUFFIX,jpush.cn,DIRECT
-- DOMAIN-SUFFIX,bugly.qq.com,DIRECT
-- DOMAIN-SUFFIX,easytomessage.com,DIRECT
+  # 华为云 / 腾讯云常见网段
+  - IP-CIDR,120.221.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,139.9.0.0/16,DIRECT,no-resolve
 
-# 地图 / 国内服务
-- DOMAIN-SUFFIX,baidu.com,DIRECT
-- DOMAIN-SUFFIX,qq.com,DIRECT
 
-# Google analytics（有些SDK会走这个）
-- DOMAIN-SUFFIX,app-analytics-services.com,DIRECT
-
-# 游戏服务器 IP（你日志里出现的）
-- IP-CIDR,139.9.178.8/32,DIRECT,no-resolve
-- IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
-
-# 华为云 / 腾讯云常见网段
-- IP-CIDR,120.221.0.0/16,DIRECT,no-resolve
-- IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
-- IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
-- IP-CIDR,139.9.0.0/16,DIRECT,no-resolve
-  
   # =====================================================================
-  # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
+  # 2. iCloud & Gateway 分流
   # =====================================================================
-
-  # 1.1 iCloud 大流量（照片、备份、同步）100% 直连
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
@@ -65,22 +59,20 @@ rules:
   - DOMAIN-KEYWORD,icloudusercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-content,DIRECT
 
-  # 1.2 AI 进程（必须代理，不然 Apple Intelligence 全挂）
+  # AI 进程必须代理
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
-  # 1.3 gateway 主入口（不能直连）
   - DOMAIN,gateway.icloud.com,ChatGPT
 
 
   # =====================================================================
-  # 2. Siri Relay（智能对外主网关）
+  # 3. Siri Relay
   # =====================================================================
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
-  - DOMAIN,apple-relay.fastly-edge.com.cdn20.com,ChatGPT
   - DOMAIN,guzzoni.apple.com,ChatGPT
   - DOMAIN,guzzoni.smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
@@ -88,7 +80,7 @@ rules:
 
 
   # =====================================================================
-  # 3. 地区验证 / 认证链（必须代理）
+  # 4. 地区验证 / 初始化 / Apple Intelligence
   # =====================================================================
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
@@ -96,10 +88,6 @@ rules:
   - DOMAIN,ls.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
 
-
-  # =====================================================================
-  # 4. 初始化链（Apple Intelligence 启动必要）
-  # =====================================================================
   - DOMAIN,init.gc.apple.com,ChatGPT
   - DOMAIN,init-prime.apple.com,ChatGPT
   - DOMAIN,init.ess.apple.com,ChatGPT
@@ -107,10 +95,6 @@ rules:
   - DOMAIN,init-p01st.push.apple.com,ChatGPT
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
 
-
-  # =====================================================================
-  # 5. AI 主链路（智能文本 / 视觉 / 推理引擎）
-  # =====================================================================
   - DOMAIN,intelligence.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
@@ -120,26 +104,15 @@ rules:
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
 
-
-  # =====================================================================
-  # 6. AI Fallback（高危遗漏 → 必须代理）
-  # =====================================================================
-
-  # 视觉 Fallback
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
   - DOMAIN,perception-cdn.apple.com,ChatGPT
   - DOMAIN,sylvan-cdn.apple.com,ChatGPT
-
-  # LLM Fallback
   - DOMAIN,pancake-cdn.apple.com,ChatGPT
   - DOMAIN,sequoia-cdn.apple.com,ChatGPT
-
-  # 照片智能
   - DOMAIN,ess.apple.com,ChatGPT
   - DOMAIN,probe.siri.apple.com,ChatGPT
 
-  # 最新智能链（精确不过度）
   - DOMAIN-KEYWORD,intelligence-data,ChatGPT
   - DOMAIN-KEYWORD,perception-ios,ChatGPT
   - DOMAIN-KEYWORD,pancake-v2,ChatGPT
@@ -147,7 +120,7 @@ rules:
 
 
   # =====================================================================
-  # 7. 苹果大流量 CDN（App Store / 音乐 / 更新 → 全部 DIRECT）
+  # 5. 苹果 CDN 大流量直连
   # =====================================================================
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
@@ -159,7 +132,7 @@ rules:
 
 
   # =====================================================================
-  # 8. 国内服务不走代理
+  # 6. 国内服务直连
   # =====================================================================
   - DOMAIN-KEYWORD,tencent,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
@@ -167,7 +140,11 @@ rules:
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,wandafilm,DIRECT
-  - DOMAIN-KEYWORD,qq.com,DIRECT
-  - DOMAIN-KEYWORD,im30,DIRECT
-  - DOMAIN-KEYWORD,mindoffice,DIRECT
-  - DOMAIN-KEYWORD,124.71.68.111,DIRECT
+
+
+  # =====================================================================
+  # 7. 最终规则
+  # =====================================================================
+  - RULE-SET,Domestic,DIRECT
+  - RULE-SET,Google,ChatGPT
+  - MATCH,Proxy
