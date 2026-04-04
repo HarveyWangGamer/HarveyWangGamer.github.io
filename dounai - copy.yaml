@@ -1,9 +1,9 @@
 rules:
 
   # =====================================================================
-  # 0. IM30 Mind Office 聊天 / Socket / 服务器直连（最优先）
+  # 0. IM30 Mind Office 聊天 / Socket / 服务器直连（最高优先级）
   # =====================================================================
-  # 聊天/Socket 服务器常见 IP 段（华为云/国内云）
+  # 聊天 / Socket 常见 IP 段（华为云 / 国内云）
   - IP-CIDR,1.92.0.0/16,DIRECT,no-resolve
   - IP-CIDR,119.3.0.0/16,DIRECT,no-resolve
   - IP-CIDR,139.9.0.0/16,DIRECT,no-resolve
@@ -19,19 +19,28 @@ rules:
   - IP-CIDR,139.9.178.8/32,DIRECT,no-resolve
   - IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
 
-  # 聊天 / 推送常用端口
-  - DST-PORT,7000-7100,DIRECT
+  # 聊天 / 推送常见端口（Stash 需单独写）
+  - DST-PORT,7000,DIRECT
+  - DST-PORT,7001,DIRECT
+  - DST-PORT,7002,DIRECT
+  - DST-PORT,7003,DIRECT
+  - DST-PORT,7004,DIRECT
+  - DST-PORT,7005,DIRECT
+  - DST-PORT,7006,DIRECT
+  - DST-PORT,7007,DIRECT
+  - DST-PORT,7008,DIRECT
+  - DST-PORT,7009,DIRECT
+  - DST-PORT,7010,DIRECT
+  - DST-PORT,12002,DIRECT
   - DST-PORT,19000,DIRECT
-
 
   # =====================================================================
   # 1. ChatGPT / OpenAI
   # =====================================================================
   - DOMAIN-SUFFIX,openai.com,ChatGPT
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
-  - DOMAIN-SUFFIX,api.openai.com,ChatGPT
+  - DOMAIN,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
-
 
   # =====================================================================
   # 2. IM30 Mind Office 全部直连
@@ -51,9 +60,9 @@ rules:
 
   # 推送 / 崩溃 / SDK
   - DOMAIN-SUFFIX,jpush.cn,DIRECT
+  - DOMAIN-SUFFIX,jpush.io,DIRECT
   - DOMAIN-SUFFIX,bugly.qq.com,DIRECT
   - DOMAIN-SUFFIX,easytomessage.com,DIRECT
-  - DOMAIN-SUFFIX,jpush.io,DIRECT
 
   # 地图 / 国内服务
   - DOMAIN-SUFFIX,baidu.com,DIRECT
@@ -62,10 +71,10 @@ rules:
   # Google analytics
   - DOMAIN-SUFFIX,app-analytics-services.com,DIRECT
 
-
   # =====================================================================
   # 3. iCloud & Gateway 分流
   # =====================================================================
+  # iCloud 大流量（照片、备份、同步）直连
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
@@ -74,13 +83,13 @@ rules:
   - DOMAIN-KEYWORD,icloudusercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-content,DIRECT
 
-  # AI 进程必须代理
+  # AI 进程命中 gateway 必须代理
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
 
+  # gateway 主入口
   - DOMAIN,gateway.icloud.com,ChatGPT
-
 
   # =====================================================================
   # 4. Siri Relay
@@ -92,7 +101,6 @@ rules:
   - DOMAIN,guzzoni.smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
-
 
   # =====================================================================
   # 5. 地区验证 / 初始化 / Apple Intelligence
@@ -133,7 +141,6 @@ rules:
   - DOMAIN-KEYWORD,pancake-v2,ChatGPT
   - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
 
-
   # =====================================================================
   # 6. 苹果 CDN 大流量直连
   # =====================================================================
@@ -145,7 +152,6 @@ rules:
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
   - DOMAIN,apps.apple.com,DIRECT
 
-
   # =====================================================================
   # 7. 国内服务直连
   # =====================================================================
@@ -155,7 +161,6 @@ rules:
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,wandafilm,DIRECT
-
 
   # =====================================================================
   # 8. 最终规则
