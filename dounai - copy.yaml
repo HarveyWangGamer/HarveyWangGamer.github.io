@@ -20,6 +20,7 @@ rules:
   - IP-CIDR,120.46.0.0/16,DIRECT,no-resolve
   - IP-CIDR,114.116.0.0/16,DIRECT,no-resolve
   - IP-CIDR,124.71.106.171/32,DIRECT,no-resolve
+  - IP-CIDR,139.159.146.137:7001,DIRECT,no-resolve
   
   # =====================================================================
   # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
