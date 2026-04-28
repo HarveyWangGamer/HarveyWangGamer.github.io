@@ -21,7 +21,7 @@ rules:
   - DOMAIN-KEYWORD,icloudusercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-content,DIRECT
 
-  # 1.2 AI 进程（必须代理，不然 Apple Intelligence 全挂）
+  # 1.2 AI 进程（必须代理,不然 Apple Intelligence 全挂）
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
   - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
@@ -127,8 +127,15 @@ rules:
 
 
   # =====================================================================
-  # 9. im30服务不走代理
+  # 9. im30 服务不走代理
   # =====================================================================
+  # 域名规则
+  - DOMAIN-SUFFIX,mindoffice.com,DIRECT
+  - DOMAIN-SUFFIX,mindoffice.net,DIRECT
+  - DOMAIN-SUFFIX,mindoffice.cn,DIRECT
+  - DOMAIN-SUFFIX,im30.net,DIRECT
+  
+  # IP 段规则
   - IP-CIDR,39.91.140.0/24,DIRECT
   - IP-CIDR,61.179.133.0/24,DIRECT
   - IP-CIDR,61.240.144.0/24,DIRECT
@@ -155,7 +162,3 @@ rules:
   - IP-CIDR,218.12.106.0/24,DIRECT
   - IP-CIDR,218.12.98.0/24,DIRECT
   - IP-CIDR,221.204.10.0/24,DIRECT
-  - DOMAIN-SUFFIX,mindoffice.com,DIRECT
-  - DOMAIN-SUFFIX,mindoffice.net,DIRECT
-  - DOMAIN-SUFFIX,mindoffice.cn,DIRECT
-  - DOMAIN-SUFFIX,im30.net,DIRECT
