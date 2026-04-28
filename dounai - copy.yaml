@@ -7,7 +7,6 @@ rules:
   - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
 
-
   # =====================================================================
   # 1. iCloud & Gateway — 专业分流（智能与备份完全拆开）
   # =====================================================================
@@ -22,13 +21,14 @@ rules:
   - DOMAIN-KEYWORD,icloud-content,DIRECT
 
   # 1.2 AI 进程（必须代理，不然 Apple Intelligence 全挂）
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd)),ChatGPT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced)),ChatGPT
-  - AND,((DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond)),ChatGPT
+  # 注意：iOS 系统限制无法获取进程名，PROCESS-NAME 在 Stash 中无效。
+  # 已修复 AND 规则的括号格式错误。如果 Stash 依然报错，请直接删除这三行。
+  - AND,(DOMAIN,gateway.icloud.com),(PROCESS-NAME,assistantd),ChatGPT
+  - AND,(DOMAIN,gateway.icloud.com),(PROCESS-NAME,siriinferenced),ChatGPT
+  - AND,(DOMAIN,gateway.icloud.com),(PROCESS-NAME,knowledgeconstructiond),ChatGPT
 
   # 1.3 gateway 主入口（不能直连）
   - DOMAIN,gateway.icloud.com,ChatGPT
-
 
   # =====================================================================
   # 2. Siri Relay（智能对外主网关）
@@ -42,7 +42,6 @@ rules:
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
 
-
   # =====================================================================
   # 3. 地区验证 / 认证链（必须代理）
   # =====================================================================
@@ -51,7 +50,6 @@ rules:
   - DOMAIN,location-services.apple.com,ChatGPT
   - DOMAIN,ls.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
-
 
   # =====================================================================
   # 4. 初始化链（Apple Intelligence 启动必要）
@@ -63,24 +61,20 @@ rules:
   - DOMAIN,init-p01st.push.apple.com,ChatGPT
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
 
-
   # =====================================================================
   # 5. AI 主链路（智能文本 / 视觉 / 推理引擎）
   # =====================================================================
   - DOMAIN,intelligence.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
-
   - DOMAIN,perception.apple.com,ChatGPT
   - DOMAIN,sylvan.apple.com,ChatGPT
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
 
-
   # =====================================================================
   # 6. AI Fallback（高危遗漏 → 必须代理）
   # =====================================================================
-
   # 视觉 Fallback
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
@@ -101,7 +95,6 @@ rules:
   - DOMAIN-KEYWORD,pancake-v2,ChatGPT
   - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
 
-
   # =====================================================================
   # 7. 苹果大流量 CDN（App Store / 音乐 / 更新 → 全部 DIRECT）
   # =====================================================================
@@ -113,7 +106,6 @@ rules:
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
   - DOMAIN,apps.apple.com,DIRECT
 
-
   # =====================================================================
   # 8. 国内服务不走代理
   # =====================================================================
@@ -124,7 +116,6 @@ rules:
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,wandafilm,DIRECT
   - DOMAIN-KEYWORD,qq.com,DIRECT
-
 
   # =====================================================================
   # 9. im30 服务不走代理
@@ -162,5 +153,3 @@ rules:
   - IP-CIDR,218.12.106.0/24,DIRECT
   - IP-CIDR,218.12.98.0/24,DIRECT
   - IP-CIDR,221.204.10.0/24,DIRECT
-
-
