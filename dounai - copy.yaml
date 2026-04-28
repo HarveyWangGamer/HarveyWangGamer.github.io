@@ -122,6 +122,8 @@ rules:
   - DOMAIN-KEYWORD,toutiao,DIRECT
   - DOMAIN-KEYWORD,octopus,DIRECT
   - DOMAIN-KEYWORD,mail.me,DIRECT
+  - DOMAIN-KEYWORD,wandafilm,DIRECT
+  - DOMAIN-KEYWORD,qq.com,DIRECT
 
 
   # =====================================================================
@@ -161,5 +163,4 @@ rules:
   - IP-CIDR,218.12.98.0/24,DIRECT
   - IP-CIDR,221.204.10.0/24,DIRECT
 
-  - DOMAIN-KEYWORD,wandafilm,DIRECT
-  - DOMAIN-KEYWORD,qq.com,DIRECT
+
