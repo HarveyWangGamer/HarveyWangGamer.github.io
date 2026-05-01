@@ -1,3 +1,14 @@
+name: '🤖 Custom Rules'
+desc: |-
+  ChatGPT & Apple Intelligence 规则集
+  格式转换自用户配置
+openUrl: 'http://boxjs.com/'
+author: |-
+  Harvey Wang
+category: '🪐 Proxy'
+date: '2026-05-01 15:57:00'
+version: '0.1.0'
+
 rules:
   # =====================================================================
   # 0. ChatGPT / OpenAI 自身
