@@ -1,26 +1,13 @@
 name: '🤖 ChatGPT & Apple Override'
-desc: |-
-  ChatGPT 与 Apple 智能分流规则覆写
-  适配 Stash Override 格式
-openUrl: 'https://github.com/VirgilClyne'
-author: |-
-  Harvey Wang
-category: '🪐 Proxy'
-date: '2026-05-01 16:10:00'
-version: '0.1.0'
+desc: "ChatGPT 与 Apple 智能分流规则覆写"
+category: ruleset
+icon: https://stash.wiki/favicon.ico
 
 rules:
-  # =====================================================================
-  # 0. ChatGPT / OpenAI 自身
-  # =====================================================================
   - DOMAIN-SUFFIX,openai.com,ChatGPT
   - DOMAIN-SUFFIX,chatgpt.com,ChatGPT
   - DOMAIN-SUFFIX,api.openai.com,ChatGPT
   - DOMAIN,cdn.auth0.com,ChatGPT
-
-  # =====================================================================
-  # 1. iCloud & Gateway
-  # =====================================================================
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
   - DOMAIN-SUFFIX,icloud-content.com,DIRECT
@@ -29,10 +16,6 @@ rules:
   - DOMAIN-KEYWORD,icloudusercontent,DIRECT
   - DOMAIN-KEYWORD,icloud-content,DIRECT
   - DOMAIN,gateway.icloud.com,ChatGPT
-
-  # =====================================================================
-  # 2. Siri Relay
-  # =====================================================================
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
   - DOMAIN,apple-relay.fastly-edge.com,ChatGPT
@@ -41,29 +24,17 @@ rules:
   - DOMAIN,guzzoni.smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.com,ChatGPT
   - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
-
-  # =====================================================================
-  # 3. 地区验证 / 认证链
-  # =====================================================================
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,location-services.apple.com,ChatGPT
   - DOMAIN,ls.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
-
-  # =====================================================================
-  # 4. 初始化链
-  # =====================================================================
   - DOMAIN,init.gc.apple.com,ChatGPT
   - DOMAIN,init-prime.apple.com,ChatGPT
   - DOMAIN,init.ess.apple.com,ChatGPT
   - DOMAIN,init-p01md.apple.com,ChatGPT
   - DOMAIN,init-p01st.push.apple.com,ChatGPT
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
-
-  # =====================================================================
-  # 5. AI 主链路
-  # =====================================================================
   - DOMAIN,intelligence.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
   - DOMAIN-SUFFIX,apple-intelligence.com,ChatGPT
@@ -71,10 +42,6 @@ rules:
   - DOMAIN,sylvan.apple.com,ChatGPT
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
-
-  # =====================================================================
-  # 6. AI Fallback
-  # =====================================================================
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
   - DOMAIN,perception-cdn.apple.com,ChatGPT
@@ -87,10 +54,6 @@ rules:
   - DOMAIN-KEYWORD,perception-ios,ChatGPT
   - DOMAIN-KEYWORD,pancake-v2,ChatGPT
   - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
-
-  # =====================================================================
-  # 7. 苹果大流量 CDN
-  # =====================================================================
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
   - DOMAIN-SUFFIX,apple-music.com,DIRECT
@@ -98,10 +61,6 @@ rules:
   - DOMAIN-SUFFIX,updates.cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
   - DOMAIN,apps.apple.com,DIRECT
-
-  # =====================================================================
-  # 8. 国内服务不走代理
-  # =====================================================================
   - DOMAIN-KEYWORD,tencent,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,toutiao,DIRECT
@@ -109,10 +68,6 @@ rules:
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,wandafilm,DIRECT
   - DOMAIN-KEYWORD,qq.com,DIRECT
-
-  # =====================================================================
-  # 9. im30 服务不走代理
-  # =====================================================================
   - DOMAIN-KEYWORD,mindoffice,ChatGPT
   - DOMAIN-KEYWORD,im30,ChatGPT
   - IP-CIDR,39.91.140.0/24,ChatGPT
