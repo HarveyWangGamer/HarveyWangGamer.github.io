@@ -1,13 +1,12 @@
-name: '🤖 Custom Rules'
+name: '🤖 Apple & ChatGPT Rules'
 desc: |-
-  ChatGPT & Apple Intelligence 规则集
-  格式转换自用户配置
-openUrl: 'http://boxjs.com/'
+  自定义规则集：包含 ChatGPT、Apple Intelligence 以及 im30 服务
+  适配 Surge / Loon / Shadowrocket 格式
+openUrl: 'https://github.com/VirgilClyne'
 author: |-
-  Harvey Wang
+  Harvey Wang (Modified)
 category: '🪐 Proxy'
-date: '2026-05-01 15:57:00'
-version: '0.1.0'
+version: '1.0.0'
 
 rules:
   # =====================================================================
@@ -19,7 +18,7 @@ rules:
   - DOMAIN,cdn.auth0.com,ChatGPT
 
   # =====================================================================
-  # 1. iCloud & Gateway
+  # 1. iCloud & Gateway (部分直连，部分走代理)
   # =====================================================================
   - DOMAIN-SUFFIX,icloud.com,DIRECT
   - DOMAIN-SUFFIX,icloudusercontent.com,DIRECT
@@ -31,7 +30,7 @@ rules:
   - DOMAIN,gateway.icloud.com,ChatGPT
 
   # =====================================================================
-  # 2. Siri Relay
+  # 2. Siri & Apple Relay
   # =====================================================================
   - DOMAIN,apple-relay.apple.com,ChatGPT
   - DOMAIN,apple-relay.cloudflare.com,ChatGPT
@@ -43,17 +42,13 @@ rules:
   - DOMAIN-SUFFIX,smoot.apple.cn,ChatGPT
 
   # =====================================================================
-  # 3. 地区验证 / 认证链
+  # 3. 地区验证与初始化链
   # =====================================================================
   - DOMAIN,gsas.apple.com,ChatGPT
   - DOMAIN,gspe1-ssl.ls.apple.com,ChatGPT
   - DOMAIN,location-services.apple.com,ChatGPT
   - DOMAIN,ls.apple.com,ChatGPT
   - DOMAIN,api-glb-aapne1a.smoot.apple.com,ChatGPT
-
-  # =====================================================================
-  # 4. 初始化链
-  # =====================================================================
   - DOMAIN,init.gc.apple.com,ChatGPT
   - DOMAIN,init-prime.apple.com,ChatGPT
   - DOMAIN,init.ess.apple.com,ChatGPT
@@ -62,7 +57,7 @@ rules:
   - DOMAIN,init-s01st.push.apple.com,ChatGPT
 
   # =====================================================================
-  # 5. AI 主链路
+  # 4. Apple Intelligence 主链路
   # =====================================================================
   - DOMAIN,intelligence.apple.com,ChatGPT
   - DOMAIN,intelligence-ios.apple.com,ChatGPT
@@ -71,10 +66,6 @@ rules:
   - DOMAIN,sylvan.apple.com,ChatGPT
   - DOMAIN,pancake.apple.com,ChatGPT
   - DOMAIN,sequoia.apple.com,ChatGPT
-
-  # =====================================================================
-  # 6. AI Fallback
-  # =====================================================================
   - DOMAIN,cvp.apple.com,ChatGPT
   - DOMAIN,cvp-data.apple.com,ChatGPT
   - DOMAIN,perception-cdn.apple.com,ChatGPT
@@ -89,7 +80,7 @@ rules:
   - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
 
   # =====================================================================
-  # 7. 苹果大流量 CDN
+  # 5. 苹果 CDN 与国内服务 (直连)
   # =====================================================================
   - DOMAIN-SUFFIX,mzstatic.com,DIRECT
   - DOMAIN-SUFFIX,aaplimg.com,DIRECT
@@ -98,10 +89,6 @@ rules:
   - DOMAIN-SUFFIX,updates.cdn-apple.com,DIRECT
   - DOMAIN-SUFFIX,mesu.apple.com,DIRECT
   - DOMAIN,apps.apple.com,DIRECT
-
-  # =====================================================================
-  # 8. 国内服务不走代理
-  # =====================================================================
   - DOMAIN-KEYWORD,tencent,DIRECT
   - DOMAIN-KEYWORD,douyin,DIRECT
   - DOMAIN-KEYWORD,toutiao,DIRECT
@@ -111,7 +98,7 @@ rules:
   - DOMAIN-KEYWORD,qq.com,DIRECT
 
   # =====================================================================
-  # 9. im30 服务不走代理
+  # 6. im30 服务 (代理)
   # =====================================================================
   - DOMAIN-KEYWORD,mindoffice,ChatGPT
   - DOMAIN-KEYWORD,im30,ChatGPT
