@@ -107,10 +107,12 @@ rules:
   - DOMAIN-KEYWORD,perception-ios,ChatGPT
   - DOMAIN-KEYWORD,pancake-v2,ChatGPT
   - DOMAIN-KEYWORD,sylvan-v2,ChatGPT
-  - DOMAIN-SUFFIX,push.apple.com,DIRECT
-  - DOMAIN-SUFFIX,gateway.push.apple.com,DIRECT
-  - DOMAIN-SUFFIX,api.push.apple.com,DIRECT
-  - DOMAIN-SUFFIX,sandbox.push.apple.com,DIRECT
+  
+  # 苹果推送
+  - DOMAIN-SUFFIX,push.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,gateway.push.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,api.push.apple.com,ChatGPT
+  - DOMAIN-SUFFIX,sandbox.push.apple.com,ChatGPT
 
 
   # =====================================================================
