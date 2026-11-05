@@ -137,6 +137,8 @@ rules:
   - DOMAIN-KEYWORD,mail.me,DIRECT
   - DOMAIN-KEYWORD,wandafilm,DIRECT
   - DOMAIN-KEYWORD,qq.com,DIRECT
+  - DOMAIN-KEYWORD,ugreen,DIRECT
+  - DOMAIN-KEYWORD,nas,DIRECT
   
 
  
